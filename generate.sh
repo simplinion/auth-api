@@ -62,7 +62,7 @@ function prepareScript()
 #
 function updateYaml()
 {
-    YAML=$(cat $YAML_FILE_PATH | sed -r "s/[0-9]+.[0-9]+.[0-9]+/$VERSION/g" | sed -r "s/host:.*$/host: $HOST/g")
+    YAML=$(cat $YAML_FILE_PATH | sed -r "s/[0-9]+\.[0-9]+\.[0-9]+/$VERSION/g" | sed -r "s/host:.*$/host: $HOST/g")
     echo "$YAML" > $YAML_FILE_PATH
 }
 
