@@ -1,0 +1,6 @@
+[submodule "SymfonyBundle-php"]
+	path = SymfonyBundle-php
+	url = git@github.com:JohnAmadis/auth-php-symfony.git
+[submodule "SwaggerClient-php"]
+	path = SwaggerClient-php
+	url = git@github.com:JohnAmadis/auth-php.git

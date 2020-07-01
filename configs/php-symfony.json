@@ -1,0 +1,9 @@
+{
+    "gitUserId" : "JohnAmadis", 
+    "gitRepoId" : "auth-php-symfony",
+    "variableNamingConvention" : "camelCase", 
+    "invokerPackage" : "ChocoAuth\\Server",
+    "bundleName" : "ChocoAuth", 
+    "composerProjectName" : "auth-server", 
+    "composerVendorName" : "chocotechnologies"
+}
