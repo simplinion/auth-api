@@ -1,0 +1,652 @@
+swagger: '2.0'
+info:
+  version: '1.0.0'
+  title: Choco Authorization API
+  description: >
+    This is an interface for authorization by using ChocoAuth service  
+
+securityDefinitions:
+  WebAuth:
+    type: basic
+    description: >
+      Basic authorization for trusted hosts
+  ChocoAuth:
+    type: oauth2
+    authorizationUrl: https://choco-technologies.com/login/oauth/authorize
+    tokenUrl: https://choco-technologies.com/login/oauth/access_token
+    flow: accessCode
+    description: >
+      OAuth2 authorization with ChocoAuth API
+    scopes:
+      user: >
+        allows only for user identification (without privilege for accessing of user information). The client application will be able to read only `user_id`, but nothing more. 
+      edit: >
+        allows to edit of user data
+      remove: >
+        allows to remove of the user
+      admin: >
+        Scope for the choco-technologies admin. It allows for managment of the users database
+
+security:
+  - ChocoAuth:
+    - user
+    - edit
+    - remove
+    - admin
+
+definitions:
+  ErrorResponse:
+    properties:
+      message:
+        type: string
+        example: The parameter is not valid uri string
+        description: >
+          Error message with details about the error. Can be printed to the user 
+      parameterName:
+        type: string
+        example: redirect_uri
+        description: >
+          Name of a request parameter that is not valid
+  AuthorizeRequest:
+    required:
+      - client_id
+      - redirect_uri
+      - scope
+      - state
+    properties:
+      response_type:
+        type: string
+        enum: [ code ]
+        default: code
+        description: >
+          Type of the response to return. 
+            * `code` - The authorization will return a code
+      client_id:
+        type: string
+        example: '2a57a5d9e7a5162cfc134893a4850e61'
+        description: >
+          Unique ID of the client registered in the choco-technologies systems.
+      redirect_uri:
+        type: string
+        format: uri
+        example: https://choco-order.com
+      scope:
+        type: array
+        description: >
+          Array with the requested scope
+        items:
+          type: string
+          enum: 
+            - user
+            - edit
+            - remove
+            - admin
+          description: >
+            Scope to access for the request
+              * `user` - allows only for user identification (without privilege for accessing of user information). The client application will be able to read only `user_id`, but 
+                nothing more. 
+              * `edit` - allows for editing of user data
+              * `remove` - allows to remove of a user (unregister)
+      state:
+        type: string 
+        minLength: 20
+        example: '48047b58176b0c777c040b8f27a1da90'
+        description: >
+          The `state` variable should be used by client application to identify the request 
+          and verify that it was not sent by an attacker. The string should be at least
+          20 characters length and it should be as random as possible. If you are using PHP, you can 
+          use a code `bin2hex(random_bytes(20));` to generate such string
+        
+  TokenRequest:
+    required: 
+      - grant_type
+      - client_id
+      - client_secret
+      - redirect_uri
+      - code
+    properties:
+      grant_type:
+        type: string
+        enum: [ authorization_code ]
+        description: >
+          Type of the authorization
+      client_id:
+        type: string
+        minLength: 10
+        description: >
+          ID of the client that requests the token. This can be public, but it
+          is more secure when the client ID is kept in secret
+      client_secret: 
+        type: string
+        minLength: 10
+        description: >
+          Secret key to identify the client application. It is like a password for 
+          an application. It should be kept in secret
+      redirect_uri:
+        type: string
+        format: uri
+        description: >
+          URI to use as a callback for the request. 
+      code:
+        type: string
+        minLength: 20 
+        description: >
+          Authentication code received from the `/login/oauth/authorize` request
+  UserInfo:
+    required:
+      - user_id
+    properties:
+      user_id:
+        type: string 
+        minLength: 10
+        example: '110248495921238986420'
+        description: >
+          Unique ID of a user. It should be used insted of the email for identification 
+          purposes
+      email:
+        type: string
+        format: email
+        example: johnsmith@example.com
+        description: >
+          User's email - you should not store it in your database, as it can change. 
+          Please use `user_id` instead 
+      verification:
+        type: array 
+        description: >
+          Array with items that have been verified for the user
+        items:
+          type: string 
+          enum: [ email ]
+          description: >
+            Stores name of an item that has been verified for this user
+  AccessToken:
+    properties:
+      access_token:
+        type: string
+        minLength: 10
+        description: >
+          Authentication token to be used as authorization for the requests
+      token_type:
+        type: string
+        example: Bearer
+        description: >
+          Type of the token
+      user_info:
+        $ref: '#/definitions/UserInfo'
+      scope:
+        type: array
+        description: >
+          Array with the requested scope
+        items:
+          type: string
+          enum: 
+            - user
+            - edit
+            - remove
+            - admin
+          description: >
+            Scope to access for the request
+              * `user` - allows only for user identification (without privilege for accessing of user information). The client application will be able to read only `user_id`, but 
+                nothing more. 
+              * `edit` - allows for editing of user data
+              * `remove` - allows to remove of a user (unregister)
+  SignInfo:
+    description: >
+      Information required for signing in and signin up a user
+    required: 
+      - email
+      - password
+    properties:
+      email:
+        type: string
+        format: email
+        example: johnsmith@example.com
+        description: >
+          Email assocaited with the user
+      password:
+        type: string
+        example: 'JDJ5JDEyJG41azQ2V044Z3ZMUlpGQ3g2bEFEY3VEcmJyVlYveVMyY00zZFRacnFjYjFtYTBBVzJIbXlX'
+        description: >
+          Base64 encoded and Bcrypted password
+        format: byte
+        
+paths:
+  /login/oauth/authorize:
+    get:
+      summary: Endpoint for authorization
+      description: >
+        The endpoint allows for authorization in the ChocoAuth system. It returns an 
+        authorization code, that can be used later in the requests
+      security: []
+      produces:
+        - application/json
+      tags:
+        - oauth
+      parameters:
+        - name: authorizeRequest
+          in: body
+          required: true
+          schema: 
+            $ref: "#/definitions/AuthorizeRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+            properties:
+              code:
+                type: string
+                description: >
+                  An authorization code that can be used in `/login/oauth/access_token` 
+                  endpoint to receive an authorization token. 
+        302:
+          description: >
+            Redirection to the selected location is required.
+          headers:
+            Location:
+              type: string
+              format: uri
+              description: >
+                URI to use for the redirection
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+          
+  /login/oauth/access_token:
+    post:
+      summary: Allows for receiving token
+      description: >
+        The api is responsible for receiving of the token for a registered user. 
+        You suppose to use `/login/oauth/authorize` first
+      security: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - oauth
+      parameters:
+        - name: tokenRequest
+          in: body
+          required: true
+          schema:
+           $ref: "#/definitions/TokenRequest"
+      responses:
+        200:
+          description: Success
+          schema:
+           $ref: '#/definitions/AccessToken'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sign/in:
+    post:
+      summary: signs in a user
+      description: >
+        The endpoint is used for signing in of a user. This can be used only by a trusted hosts
+      security:
+        - WebAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - login
+      parameters:
+        - name: SignInfo
+          in: header
+          type: string
+          format: base64
+          description: >
+            Information about the user encoded in base64. The format should be compatible 
+            with `#/definitions/SignInfo`
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/SignInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such user
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sign/up:
+    post:
+      summary: signs up a user
+      description: >
+        The endpoint should be used to sign out a user
+      security:
+        - WebAuth: []
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - login
+      parameters:
+        - name: SignInfo
+          in: header
+          type: string
+          format: base64
+          description: >
+            Information about the user encoded in base64. The format should be compatible 
+            with `#/definitions/SignInfo`
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/SignInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        409:
+          description: User with the given email already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /sign/down:
+    post:
+      summary: unregisters a user
+      description: >
+        The endpoint should be used to unregister a user
+      security:
+        - ChocoAuth: [ remove ]
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      tags:
+        - login
+      parameters:
+        - name: SignInfo
+          in: header
+          type: string
+          format: base64
+          description: >
+            Information about the user encoded in base64. The format should be compatible 
+            with `#/definitions/SignInfo`
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: '#/definitions/SignInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        409:
+          description: User with the given email already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /users:
+    get:
+      summary: Returns list of registered users
+      description: >
+        The API is for admin only and allows for reading of list of registered users
+      security:
+        - ChocoAuth: [ admin ]
+      produces:
+        - application/json
+      tags:
+        - user
+        - admin
+      parameters:
+        - name: max
+          type: integer
+          default: 100
+          minimum: 1
+          in: query
+          description: Maximum number of results to return
+        - name: page
+          type: integer
+          default: 0
+          minimum: 0
+          in: query
+          description: >
+            If `max` parameter is set, this is a starting offset for the results. 
+            For example you can get a results from 200 to 300 by setting `max` to `100` 
+            and `page` to `2`
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        403:
+          description: You are not authorized for this request
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /user/{user_id}:
+    get:
+      summary: Returns information about the user
+      description: >
+        The endpoint is designed for reading of information about a user 
+      security:
+        - ChocoAuth: [ user, admin ]
+      produces:
+        - application/json
+      tags:
+        - user
+      parameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+          description: Unique ID of a user
+      responses:
+        200:
+          description: Success 
+          schema:
+            $ref: '#/definitions/UserInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such user
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      summary: Registers a new user
+      description: >
+        The endpoint is used for registration of a new users
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin]
+      produces:
+        - application/json
+      tags:
+        - user
+        - admin
+      parameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+          description: Unique ID of a user
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserInfo'
+      responses:
+        200:
+          description: Success 
+          schema:
+            $ref: '#/definitions/UserInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        403:
+          description: You are not authorized for this request
+        408:
+          description: The token has expired
+        409:
+          description: The given user already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      summary: Updates information about the user
+      description: >
+        The endpoint is for update of information about the given user. 
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin]
+      produces:
+        - application/json
+      tags:
+        - user
+        - admin
+      parameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+          description: Unique ID of a user
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserInfo'
+      responses:
+        200:
+          description: Success 
+          schema:
+            $ref: '#/definitions/UserInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        403:
+          description: You are not authorized for this request
+        408:
+          description: The token has expired
+        409:
+          description: The given user already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      summary: Deletes a user
+      description: >
+        The API is designed for removal of a user with the given `user_id`
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin]
+      produces:
+        - application/json
+      tags:
+        - user
+        - admin
+      parameters:
+        - name: user_id
+          in: path
+          type: string
+          required: true
+          description: Unique ID of a user
+      responses:
+        200:
+          description: Success 
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        408:
+          description: The token has expired
+        409:
+          description: The given user already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /ping:
+    get:
+      summary: Server heartbeat operation
+      description: This operation shows how to override the global security defined above, as we want to open it up for all users.
+      security: [ ]
+      responses:
+        200:
+          description: OK
+host: oauth2.choco-technologies.com
+basePath: /1.0.0
+schemes:
+ - https
