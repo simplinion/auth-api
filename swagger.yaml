@@ -475,7 +475,7 @@ paths:
       description: >
         The endpoint is designed for reading of information about a user 
       security:
-        - ChocoAuth: [ user, admin ]
+        - ChocoAuth: [ user ]
       produces:
         - application/json
       tags:
