@@ -75,7 +75,7 @@ updateYaml
 
 if fileExists "$GENERATE_FILE_PATH" && fileExists "$SWAGGER_JAR_FILE"
 then 
-    doCommandAsStep "Generation of module $MODULE" $GENERATE_FILE_PATH --jar="$SWAGGER_JAR_FILE"  -m=$MODULE -i=$YAML_FILE_PATH -t=$TARGET_PATH -o="'--config=$CONFIG_FILE'"
+    doCommandAsStep "Generation of module $MODULE" $GENERATE_FILE_PATH --jar="$SWAGGER_JAR_FILE"  -m=$MODULE -i=$YAML_FILE_PATH -t=$TARGET_PATH -o="'--config=$CONFIG_FILE'" --verbose=$VERBOSE
 else 
     doCommandAsStep "Generation of module $MODULE by using docker image $DOCKER_IMAGE" docker run -it --rm -v $THIS_DIR:$THIS_DIR -w $THIS_DIR $DOCKER_IMAGE "$GENERATE_FILE_PATH" --jar="$SWAGGER_JAR_FILE" -m=$MODULE -i=$YAML_FILE_PATH -t=$TARGET_PATH -o="'--config=$CONFIG_FILE'"
     doCommandAsStep "Changing owner of files to $(id -u):$(id -g)" docker run --rm -it -v $THIS_DIR:$THIS_DIR -w $THIS_DIR $DOCKER_IMAGE find $THIS_DIR -exec chown $(id -u):$(id -g) {} \\\;
