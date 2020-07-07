@@ -2,7 +2,7 @@ pipelines:
     default:
         - step:
             name: "Initialization of the repository"
-            image: chocotechnologies/swagger-codegen:1.0.20
+            image: chocotechnologies/swagger-codegen:1.0.21
             trigger: automatic
             script:
                 - ./initialize.sh
@@ -10,7 +10,7 @@ pipelines:
         V.*:
             - step:
                 name: Publishing of new version
-                image: chocotechnologies/swagger-codegen:1.0.20
+                image: chocotechnologies/swagger-codegen:1.0.21
                 trigger: automatic
                 script:
                     - git config --global user.email "pipeline@choco-technologies.com"
