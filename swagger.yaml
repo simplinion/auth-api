@@ -427,6 +427,7 @@ paths:
         - ChocoAuth: [ admin ]
       produces:
         - application/json
+      operationId: getUsers
       tags:
         - user
       parameters:
@@ -468,7 +469,7 @@ paths:
             the error response is filled in this case - it depends on the error type
           schema:
             $ref: '#/definitions/ErrorResponse'
-  /user/{user_id}:
+  /user/{userid}:
     get:
       summary: Returns information about the user
       description: >
@@ -477,10 +478,11 @@ paths:
         - ChocoAuth: [ user, admin ]
       produces:
         - application/json
+      operationId: getUser
       tags:
         - user
       parameters:
-        - name: user_id
+        - name: userid
           in: path
           type: string
           required: true
@@ -517,10 +519,11 @@ paths:
         - ChocoAuth: [admin]
       produces:
         - application/json
+      operationId: registerUser
       tags:
         - admin
       parameters:
-        - name: user_id
+        - name: userid
           in: path
           type: string
           required: true
@@ -562,10 +565,11 @@ paths:
         - ChocoAuth: [admin]
       produces:
         - application/json
+      operationId: updateUser
       tags:
         - admin
       parameters:
-        - name: user_id
+        - name: userid
           in: path
           type: string
           required: true
@@ -607,10 +611,11 @@ paths:
         - ChocoAuth: [admin]
       produces:
         - application/json
+      operationId: deleteUser
       tags:
         - admin
       parameters:
-        - name: user_id
+        - name: userid
           in: path
           type: string
           required: true
