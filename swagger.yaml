@@ -519,6 +519,8 @@ paths:
         - ChocoAuth: [admin]
       produces:
         - application/json
+      consumes:
+        - application/json
       operationId: registerUser
       tags:
         - admin
@@ -564,6 +566,8 @@ paths:
         - WebAuth: []
         - ChocoAuth: [admin]
       produces:
+        - application/json
+      consumes:
         - application/json
       operationId: updateUser
       tags:
