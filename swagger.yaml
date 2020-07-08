@@ -134,7 +134,7 @@ definitions:
           Authentication code received from the `/login/oauth/authorize` request
   UserInfo:
     required:
-      - user_id
+      - email
     properties:
       user_id:
         type: string 
@@ -469,6 +469,50 @@ paths:
             the error response is filled in this case - it depends on the error type
           schema:
             $ref: '#/definitions/ErrorResponse'
+  /user:
+    put:
+      summary: Registers a new user
+      description: >
+        The endpoint is used for registration of a new users
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin]
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      operationId: registerUser
+      tags:
+        - admin
+      parameters:
+        - name: user
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/UserInfo'
+      responses:
+        200:
+          description: Success 
+          schema:
+            $ref: '#/definitions/UserInfo'
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        401:
+          description: The given client ID is not privileged for authorizations or the secret is not valid
+        403:
+          description: You are not authorized for this request
+        408:
+          description: The token has expired
+        409:
+          description: The given user already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
   /user/{userid}:
     get:
       summary: Returns information about the user
@@ -504,54 +548,6 @@ paths:
           description: No such user
         408:
           description: The token has expired
-        500:
-          description: >
-            Internal server Error - please note, that there is not guarantee that 
-            the error response is filled in this case - it depends on the error type
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-    put:
-      summary: Registers a new user
-      description: >
-        The endpoint is used for registration of a new users
-      security:
-        - WebAuth: []
-        - ChocoAuth: [admin]
-      produces:
-        - application/json
-      consumes:
-        - application/json
-      operationId: registerUser
-      tags:
-        - admin
-      parameters:
-        - name: userid
-          in: path
-          type: string
-          required: true
-          description: Unique ID of a user
-        - name: user
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/UserInfo'
-      responses:
-        200:
-          description: Success 
-          schema:
-            $ref: '#/definitions/UserInfo'
-        400:
-          description: The request is invalid. Please verify the parameters
-          schema:
-            $ref: '#/definitions/ErrorResponse'
-        401:
-          description: The given client ID is not privileged for authorizations or the secret is not valid
-        403:
-          description: You are not authorized for this request
-        408:
-          description: The token has expired
-        409:
-          description: The given user already exists
         500:
           description: >
             Internal server Error - please note, that there is not guarantee that 
