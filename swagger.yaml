@@ -429,7 +429,6 @@ paths:
         - application/json
       tags:
         - user
-        - admin
       parameters:
         - name: max
           type: integer
@@ -475,7 +474,7 @@ paths:
       description: >
         The endpoint is designed for reading of information about a user 
       security:
-        - ChocoAuth: [ user ]
+        - ChocoAuth: [ user, admin ]
       produces:
         - application/json
       tags:
@@ -519,7 +518,6 @@ paths:
       produces:
         - application/json
       tags:
-        - user
         - admin
       parameters:
         - name: user_id
@@ -565,7 +563,6 @@ paths:
       produces:
         - application/json
       tags:
-        - user
         - admin
       parameters:
         - name: user_id
@@ -611,7 +608,6 @@ paths:
       produces:
         - application/json
       tags:
-        - user
         - admin
       parameters:
         - name: user_id
@@ -640,6 +636,8 @@ paths:
             $ref: '#/definitions/ErrorResponse'
   /ping:
     get:
+      produces:
+        - application/json
       summary: Server heartbeat operation
       description: This operation shows how to override the global security defined above, as we want to open it up for all users.
       security: [ ]
