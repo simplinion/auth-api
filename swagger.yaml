@@ -208,7 +208,7 @@ definitions:
         example: 'JDJ5JDEyJG41azQ2V044Z3ZMUlpGQ3g2bEFEY3VEcmJyVlYveVMyY00zZFRacnFjYjFtYTBBVzJIbXlX'
         description: >
           Base64 encoded and Bcrypted password
-        format: byte
+        format: base64
         
 paths:
   /login/oauth/authorize:
