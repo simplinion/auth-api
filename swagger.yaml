@@ -318,6 +318,7 @@ paths:
         - name: SignInfo
           in: header
           type: string
+          required: true
           format: base64
           description: >
             Information about the user encoded in base64. The format should be compatible 
@@ -359,6 +360,7 @@ paths:
         - name: SignInfo
           in: header
           type: string
+          required: true
           format: base64
           description: >
             Information about the user encoded in base64. The format should be compatible 
@@ -400,6 +402,7 @@ paths:
         - name: SignInfo
           in: header
           type: string
+          required: true
           format: base64
           description: >
             Information about the user encoded in base64. The format should be compatible 
