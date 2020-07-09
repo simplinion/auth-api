@@ -220,6 +220,7 @@ paths:
       security: []
       produces:
         - application/json
+      operationId: getAuthenticationCode
       tags:
         - oauth
       parameters:
@@ -237,7 +238,7 @@ paths:
                 type: string
                 description: >
                   An authorization code that can be used in `/login/oauth/access_token` 
-                  endpoint to receive an authorization token. 
+                  endpoint (`#getAccessToken`) to receive an authorization token. 
         302:
           description: >
             Redirection to the selected location is required.
@@ -265,12 +266,13 @@ paths:
       summary: Allows for receiving token
       description: >
         The api is responsible for receiving of the token for a registered user. 
-        You suppose to use `/login/oauth/authorize` first
+        You suppose to use `/login/oauth/authorize` (`#getAuthenticationCode`) first
       security: []
       consumes:
         - application/json
       produces:
         - application/json
+      operationId: getAccessToken
       tags:
         - oauth
       parameters:
@@ -309,6 +311,7 @@ paths:
         - application/json
       produces:
         - application/json
+      operationId: signIn
       tags:
         - login
       parameters:
@@ -342,13 +345,14 @@ paths:
     post:
       summary: signs up a user
       description: >
-        The endpoint should be used to sign out a user
+        The endpoint should be used to sign up a new user
       security:
         - WebAuth: []
       consumes:
         - application/json
       produces:
         - application/json
+      operationId: signUp
       tags:
         - login
       parameters:
@@ -389,6 +393,7 @@ paths:
         - application/json
       produces:
         - application/json
+      operationId: signDown
       tags:
         - login
       parameters:
