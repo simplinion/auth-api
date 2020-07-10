@@ -110,9 +110,10 @@ definitions:
         enum: [ authorization_code ]
         description: >
           Type of the authorization
-      client_id:
-        type: string
+      clientId:
+        type: string 
         minLength: 10
+        example: '110248495921238986420'
         description: >
           ID of the client that requests the token. This can be public, but it
           is more secure when the client ID is kept in secret
@@ -209,7 +210,33 @@ definitions:
         description: >
           Base64 encoded and Bcrypted password
         format: base64
-        
+  ClientInfo:
+    description: >
+      Client is an identifier for an application that needs to use oauth2 authorization. This object 
+      stores information about such client 
+    required:
+      - clientId
+      - secret
+    properties:
+      userId:
+        type: string 
+        minLength: 10
+        example: '110248495921238986420'
+        description: >
+          Unique ID of a user. It should be used insted of the email for identification 
+          purposes
+      clientId:
+        type: string 
+        minLength: 10
+        example: '110248495921238986420'
+        description: >
+          Unique ID of a client
+      secret:
+        type: string
+        example: 'JDJ5JDEyJG41azQ2V044Z3ZMUlpGQ3g2bEFEY3VEcmJyVlYveVMyY00zZFRacnFjYjFtYTBBVzJIbXlX'
+        description: >
+          Base64 encoded password
+        format: base64
 paths:
   /login/oauth/authorize:
     get:
@@ -410,8 +437,6 @@ paths:
       responses:
         200:
           description: Success
-          schema:
-            $ref: '#/definitions/SignInfo'
         400:
           description: The request is invalid. Please verify the parameters
           schema:
@@ -641,6 +666,169 @@ paths:
           description: The token has expired
         409:
           description: The given user already exists
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /create/client/{userId}:
+    put:
+      summary: Registers new client for the given user
+      description: >
+        The endpoint is for creating of a new client that can be used for authorization purpose (in `/login/oauth/authorize` endpoint). The user specified by the `userId` parameter will be set as an owner for the client. 
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin, user]
+      produces:
+        - application/json
+      operationId: createClient
+      tags:
+        - client
+      parameters:
+        - name: userId
+          in: path
+          type: string
+          required: true
+          description: >
+            Unique ID of a user to be set as an owner of the client
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/ClientInfo"
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such user
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /client/{clientId}:
+    get:
+      summary: Returns information about the given client 
+      description: >
+        The endpoint allows for reading of information about the given client
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin, user]
+      produces:
+        - application/json
+      operationId: getClient
+      tags:
+        - client
+      parameters:
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: >
+            ID of a client to return the information for 
+      responses:
+        200:
+          description: Success
+          schema:
+            $ref: "#/definitions/ClientInfo"
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such client
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      summary: Updates the client
+      description: >
+        Allows for update of the information about the client 
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin,user]
+      produces:
+        - application/json
+      operationId: updateClient
+      tags:
+        - client
+      parameters:
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: >
+            ID of a client to return the information for 
+        - name: client
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/ClientInfo"
+      responses:
+        200:
+          description: Success
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such client
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      summary: Deletes the client
+      description: >
+        Allows for deletion of the information about the client 
+      security:
+        - WebAuth: []
+        - ChocoAuth: [admin,user]
+      produces:
+        - application/json
+      operationId: deleteClient
+      tags:
+        - client
+      parameters:
+        - name: clientId
+          in: path
+          type: string
+          required: true
+          description: >
+            ID of a client to return the information for 
+      responses:
+        200:
+          description: Success
+        400:
+          description: The request is invalid. Please verify the parameters
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such client
+        408:
+          description: The token has expired
         500:
           description: >
             Internal server Error - please note, that there is not guarantee that 
