@@ -61,6 +61,9 @@ definitions:
             * `code` - The authorization will return a code
       client_id:
         type: string
+        minLength: 10
+        maxLength: 30
+        pattern: '^[a-zA-Z0-9]+$'
         example: '2a57a5d9e7a5162cfc134893a4850e61'
         description: >
           Unique ID of the client registered in the choco-technologies systems.
@@ -112,6 +115,8 @@ definitions:
       clientId:
         type: string 
         minLength: 10
+        maxLength: 30
+        pattern: '^[a-zA-Z0-9]+$'
         example: '110248495921238986420'
         description: >
           ID of the client that requests the token. This can be public, but it
@@ -257,6 +262,8 @@ definitions:
       clientId:
         type: string 
         minLength: 10
+        maxLength: 30
+        pattern: '^[a-zA-Z0-9]+$'
         example: '110248495921238986420'
         description: >
           Unique ID of a client
@@ -759,6 +766,9 @@ paths:
         - name: clientId
           in: path
           type: string
+          minLength: 10
+          maxLength: 30
+          pattern: '^[a-zA-Z0-9]+$'
           required: true
           description: >
             ID of a client to return the information for 
@@ -801,6 +811,9 @@ paths:
         - name: clientId
           in: path
           type: string
+          minLength: 10
+          maxLength: 30
+          pattern: '^[a-zA-Z0-9]+$'
           required: true
           description: >
             ID of a client to return the information for 
@@ -844,6 +857,9 @@ paths:
         - name: clientId
           in: path
           type: string
+          minLength: 10
+          maxLength: 30
+          pattern: '^[a-zA-Z0-9]+$'
           required: true
           description: >
             ID of a client to return the information for 
