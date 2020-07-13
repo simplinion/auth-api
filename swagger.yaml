@@ -9,7 +9,7 @@ securityDefinitions:
   WebAuth:
     type: basic
     description: >
-      Basic authorization for trusted hosts
+      Basic authorization only for trusted hosts
   ChocoAuth:
     type: oauth2
     authorizationUrl: https://choco-technologies.com/login/oauth/authorize
@@ -50,9 +50,7 @@ definitions:
   AuthorizeRequest:
     required:
       - client_id
-      - redirect_uri
       - scope
-      - state
     properties:
       response_type:
         type: string
@@ -70,6 +68,8 @@ definitions:
         type: string
         format: uri
         example: https://choco-order.com
+        description: >
+          URI to use as a callback for the request. 
       scope:
         type: array
         description: >
@@ -102,7 +102,6 @@ definitions:
       - grant_type
       - client_id
       - client_secret
-      - redirect_uri
       - code
     properties:
       grant_type:
@@ -191,6 +190,25 @@ definitions:
                 nothing more. 
               * `edit` - allows for editing of user data
               * `remove` - allows to remove of a user (unregister)
+  AuthenticationCode:
+    description: >
+      Stores information returned in the valid response of `/login/oauth/authorize` endpoint
+    properties:
+      code:
+        type: string 
+        example: 'JDJ5JDEyJG41azQ2V044Z3ZMUlpGQ3'
+        description: >
+          Secret code required for authentication of a user
+      state:
+        type: string 
+        minLength: 20
+        example: '48047b58176b0c777c040b8f27a1da90'
+        description: >
+          The `state` variable should be used by client application to identify the request 
+          and verify that it was not sent by an attacker. The string should be at least
+          20 characters length and it should be as random as possible. If you are using PHP, you can 
+          use a code `bin2hex(random_bytes(20));` to generate such string
+
   SignInfo:
     description: >
       Information required for signing in and signin up a user
@@ -244,7 +262,10 @@ paths:
       description: >
         The endpoint allows for authorization in the ChocoAuth system. It returns an 
         authorization code, that can be used later in the requests
-      security: []
+      security: 
+        - WebAuth: []
+      consumes:
+        - application/json
       produces:
         - application/json
       operationId: getAuthenticationCode
@@ -256,31 +277,27 @@ paths:
           required: true
           schema: 
             $ref: "#/definitions/AuthorizeRequest"
+        - name: SignInfo
+          in: header
+          type: string
+          required: true
+          format: base64
+          description: >
+            Information about the user encoded in base64. The format should be compatible 
+            with `#/definitions/SignInfo`
       responses:
         200:
           description: Success
           schema:
-            properties:
-              code:
-                type: string
-                description: >
-                  An authorization code that can be used in `/login/oauth/access_token` 
-                  endpoint (`#getAccessToken`) to receive an authorization token. 
-        302:
-          description: >
-            Redirection to the selected location is required.
-          headers:
-            Location:
-              type: string
-              format: uri
-              description: >
-                URI to use for the redirection
+            $ref: "#/definitions/AuthenticationCode" 
         400:
           description: The request is invalid. Please verify the parameters
           schema:
             $ref: '#/definitions/ErrorResponse'
         401:
           description: The given client ID is not privileged for authorizations
+        403:
+          description: Authentication failed
         500:
           description: >
             Internal server Error - please note, that there is not guarantee that 
@@ -294,7 +311,8 @@ paths:
       description: >
         The api is responsible for receiving of the token for a registered user. 
         You suppose to use `/login/oauth/authorize` (`#getAuthenticationCode`) first
-      security: []
+      security:
+        - WebAuth: []
       consumes:
         - application/json
       produces:
