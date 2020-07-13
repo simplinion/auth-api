@@ -173,6 +173,12 @@ definitions:
           Type of the token
       user_info:
         $ref: '#/definitions/UserInfo'
+      redirect_uri:
+        type: string
+        format: uri
+        example: https://choco-order.com
+        description: >
+          URI to use as a callback for the request. 
       scope:
         type: array
         description: >
@@ -208,7 +214,12 @@ definitions:
           and verify that it was not sent by an attacker. The string should be at least
           20 characters length and it should be as random as possible. If you are using PHP, you can 
           use a code `bin2hex(random_bytes(20));` to generate such string
-
+      redirect_uri:
+        type: string
+        format: uri
+        example: https://choco-order.com
+        description: >
+          URI to use as a callback for the request. 
   SignInfo:
     description: >
       Information required for signing in and signin up a user
