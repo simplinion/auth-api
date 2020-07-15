@@ -201,6 +201,12 @@ definitions:
                 nothing more. 
               * `edit` - allows for editing of user data
               * `remove` - allows to remove of a user (unregister)
+      expirationDate:
+        type: string 
+        format: date-time
+        example: '2017-07-21T17:32:28Z'
+        description: >
+          Stores expiration date for the session
   AuthenticationCode:
     description: >
       Stores information returned in the valid response of `/login/oauth/authorize` endpoint
@@ -225,6 +231,12 @@ definitions:
         example: https://choco-order.com
         description: >
           URI to use as a callback for the request. 
+      expirationDate:
+        type: string 
+        format: date-time
+        example: '2017-07-21T17:32:28Z'
+        description: >
+          Stores expiration date for the session
   SignInfo:
     description: >
       Information required for signing in and signin up a user
