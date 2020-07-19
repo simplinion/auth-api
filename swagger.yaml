@@ -254,7 +254,7 @@ definitions:
         type: string
         example: 'JDJ5JDEyJG41azQ2V044Z3ZMUlpGQ3g2bEFEY3VEcmJyVlYveVMyY00zZFRacnFjYjFtYTBBVzJIbXlX'
         description: >
-          Base64 encoded and Bcrypted password
+          Base64 encoded password
         format: base64
   ClientInfo:
     description: >
@@ -689,7 +689,6 @@ paths:
         The API is designed for removal of a user with the given `user_id`
       security:
         - WebAuth: []
-        - ChocoAuth: [admin]
       produces:
         - application/json
       operationId: deleteUser
