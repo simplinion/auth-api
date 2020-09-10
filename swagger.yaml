@@ -557,7 +557,7 @@ paths:
         The endpoint is used for registration of a new users
       security:
         - WebAuth: []
-        - ChocoAuth: [admin]
+        - ChocoAuth: [ admin ]
       produces:
         - application/json
       consumes:
@@ -600,7 +600,7 @@ paths:
       description: >
         The endpoint is designed for reading of information about a user 
       security:
-        - ChocoAuth: [ user, admin ]
+        - ChocoAuth: [ user ]
       produces:
         - application/json
       operationId: getUser
@@ -641,7 +641,7 @@ paths:
         The endpoint is for update of information about the given user. 
       security:
         - WebAuth: []
-        - ChocoAuth: [admin]
+        - ChocoAuth: [user]
       produces:
         - application/json
       consumes:
@@ -689,6 +689,7 @@ paths:
         The API is designed for removal of a user with the given `user_id`
       security:
         - WebAuth: []
+        - ChocoAuth: [ user ]
       produces:
         - application/json
       operationId: deleteUser
@@ -726,7 +727,7 @@ paths:
         The endpoint is for creating of a new client that can be used for authorization purpose (in `/login/oauth/authorize` endpoint). The user specified by the `userId` parameter will be set as an owner for the client. 
       security:
         - WebAuth: []
-        - ChocoAuth: [admin, user]
+        - ChocoAuth: [ user ]
       produces:
         - application/json
       operationId: createClient
@@ -760,6 +761,7 @@ paths:
             the error response is filled in this case - it depends on the error type
           schema:
             $ref: '#/definitions/ErrorResponse'
+  
   /client/{clientId}:
     get:
       summary: Returns information about the given client 
@@ -767,7 +769,7 @@ paths:
         The endpoint allows for reading of information about the given client
       security:
         - WebAuth: []
-        - ChocoAuth: [admin, user]
+        - ChocoAuth: [ user ]
       produces:
         - application/json
       operationId: getClient
@@ -810,7 +812,7 @@ paths:
         Allows for update of the information about the client 
       security:
         - WebAuth: []
-        - ChocoAuth: [admin,user]
+        - ChocoAuth: [ user ]
       consumes:
         - application/json
       produces:
@@ -858,7 +860,7 @@ paths:
         Allows for deletion of the information about the client 
       security:
         - WebAuth: []
-        - ChocoAuth: [admin,user]
+        - ChocoAuth: [user]
       produces:
         - application/json
       operationId: deleteClient
