@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: '1.0.0'
+  version: 1.0.1
   title: Choco Authorization API
   description: >
     This is an interface for authorization by using ChocoAuth service  
@@ -753,6 +753,39 @@ paths:
           description: You are not authorized for this request
         404:
           description: No such user
+        408:
+          description: The token has expired
+        500:
+          description: >
+            Internal server Error - please note, that there is not guarantee that 
+            the error response is filled in this case - it depends on the error type
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  
+  /clients:
+    get:
+      summary: Returns list of clients for the given user
+      description: >
+        The endpoint is for getting of a list of clients created by the user
+      security:
+        - WebAuth: []
+        - ChocoAuth: [ user ]
+      produces:
+        - application/json
+      operationId: getClients
+      tags:
+        - client
+      responses:
+        200:
+          description: Success
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ClientInfo"
+        403:
+          description: You are not authorized for this request
+        404:
+          description: No such client
         408:
           description: The token has expired
         500:
