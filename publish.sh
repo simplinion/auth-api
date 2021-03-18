@@ -66,7 +66,7 @@ function generate()
     doCommandAsStep "Removing of all not hidden files from $directory_path" find . -type f -name "'[^.]*'" -delete
     cd $THIS_DIR
     
-    $GENERATE_FILE_PATH -m=$module -v=$VERSION -c="$CONFIG_DIR/${module}.json"
+    $GENERATE_FILE_PATH -m=$module -v=$VERSION -c="$CONFIG_DIR/${module}.json" -t="$directory_path"
 }
 
 #
