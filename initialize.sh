@@ -58,7 +58,7 @@ function generate()
     local directory_path=$GENERATED_BASE_DIR/$directory_name
         
     doCommandAsStep "Removing of all not hidden files from $directory_path" find "$directory_path" -type f -name "'[^.]*'" -delete
-    doCommandAsStep "Generation of module $module" $genera_file_path -m=$module -c="'$CONFIG_DIR/${module}.json'"
+    doCommandAsStep "Generation of module $module" $genera_file_path -m=$module -c="'$CONFIG_DIR/${module}.json'" -t="'$directory_path'"
 }
 
 #######################################################################################
