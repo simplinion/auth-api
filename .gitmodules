@@ -4,3 +4,6 @@
 [submodule "SwaggerClient-php"]
 	path = SwaggerClient-php
 	url = git@github.com:JohnAmadis/auth-php.git
+[submodule "qt5cpp"]
+	path = qt5cpp
+	url = git@github.com:JohnAmadis/auth-qt5cpp.git
