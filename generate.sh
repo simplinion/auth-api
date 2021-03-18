@@ -42,7 +42,7 @@ function prepareScript()
 {
     defineScript "$0" "The script is for generation of REST server or client. Please remember to call initialize.sh script first"
     
-    addCommandLineOptionalArgument MODULE "-m|--module" "options" "Name of swagger-codegen module to use" "php-symfony" "php-symfony php"
+    addCommandLineOptionalArgument MODULE "-m|--module" "options" "Name of swagger-codegen module to use" "php-symfony" "php-symfony php qt5cpp"
     addCommandLineOptionalArgument TARGET_PATH "-t|--target-path" "directory" "Target directory for the generated code" "$THIS_DIR"
     addCommandLineOptionalArgument GENERATE_FILE_PATH "--generate-file-path" "file" "Path to the generate.sh script from swagger-codegen repository" "/swagger/generate.sh"
     addCommandLineOptionalArgument YAML_FILE_PATH "--yaml" "existing_file" "Path to the existing Yaml file with the REST interface definition" "$THIS_DIR/swagger.yaml"
