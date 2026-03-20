@@ -16,8 +16,6 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Initialize
         run: |
           docker run --rm \
@@ -34,8 +32,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - name: Initialize and publish
         run: |
           VERSION="${GITHUB_REF_NAME#V.}"
