@@ -1,0 +1,48 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'V.*'
+
+jobs:
+  initialize:
+    name: Initialization of the repository
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            chocotechnologies/swagger-codegen:1.0.46 \
+            ./initialize.sh
+
+  publish:
+    name: Publishing of new version
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/V.')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Initialize and publish
+        run: |
+          VERSION="${GITHUB_REF_NAME#V.}"
+          docker run --rm \
+            -v "${{ github.workspace }}:/workspace" \
+            -w /workspace \
+            -e VERSION="$VERSION" \
+            chocotechnologies/swagger-codegen:1.0.46 \
+            sh -c '
+              git config --global user.email "pipeline@choco-technologies.com" &&
+              git config --global user.name "auth-gen pipelines" &&
+              ./initialize.sh &&
+              ./publish.sh -v="$VERSION"
+            '
