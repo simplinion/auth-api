@@ -1,3 +1,7 @@
 issue-data.json
 user.json
 email.json
+artifacts/
+SwaggerClient-php/
+SymfonyBundle-php/
+qt5cpp/

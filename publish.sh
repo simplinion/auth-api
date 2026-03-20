@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-#       Script for publishing of generated API
+#       Script for packaging of generated API as artifacts
 #
 
 #
@@ -40,12 +40,13 @@ source $(getChocoScriptsPath)
 #
 function prepareScript()
 {
-    defineScript "$0" "The script for publishing of the generated API"
+    defineScript "$0" "The script for packaging of the generated API as zip artifacts"
     
-    addCommandLineRequiredArgument VERSION "-v|--version" "not_empty_string" "Version of the interface to publish"
+    addCommandLineRequiredArgument VERSION "-v|--version" "not_empty_string" "Version of the interface to package"
     addCommandLineOptionalArgument GENERATE_FILE_PATH "--generate-file-path" "existing_file" "Path to the generate.sh script" "$THIS_DIR/generate.sh"
     addCommandLineOptionalArgument MODULES_LIST_FILE_PATH "--list" "existing_file" "Path to a file with list of modules" "$THIS_DIR/generated_modules.sh"
     addCommandLineOptionalArgument CONFIG_DIR "--config" "existing_directory" "Path to a directory with swagger configurations" "$THIS_DIR/configs"
+    addCommandLineOptionalArgument ARTIFACTS_DIR "--artifacts-dir" "directory" "Path to the directory where zip artifacts will be stored" "$THIS_DIR/artifacts"
     
     parseCommandLineArguments "$@"
 }
@@ -59,47 +60,25 @@ function generate()
     local directory_name=${GENERATED_MODULES_DIRECTORIES[$module]}
     local directory_path=$GENERATED_BASE_DIR/$directory_name
     
-    cd $directory_path
-    doCommandAsStep "[$module] Reseting local changes" git reset --hard origin/master
-    doCommandAsStep "[$module] Checking out master branch" git checkout .
-    doCommandAsStep "[$module] Checking out master branch" git checkout master
-    doCommandAsStep "Removing of all not hidden files from $directory_path" find . -type f -name "'[^.]*'" -delete
-    cd $THIS_DIR
+    doCommandAsStep "Creating directory for module $module" mkdir -p "$directory_path"
+    doCommandAsStep "Removing of all files from $directory_path" find "$directory_path" -type f -delete
     
     $GENERATE_FILE_PATH -m=$module -v=$VERSION -c="$CONFIG_DIR/${module}.json" -t="$directory_path"
 }
 
 #
-#   Checks if git tag exists
+#   Packages the generated module as a zip artifact
 #
-function tagExists()
-{
-    local tagName=$1
-    git tag -l $tagName >/dev/null 2>&1
-    return $?
-}
-
-#
-#   Publishes the new version
-#
-function publish()
+function package()
 {
     local module=$1
     local directory_name=${GENERATED_MODULES_DIRECTORIES[$module]}
-    local directory_path=$GENERATED_BASE_DIR/$directory_name
+    local artifact_name="${module}-${VERSION}.zip"
     
-    cd $directory_path
-    doCommandAsStep "[$module] Adding all changes to git" git add .
-    doCommandAsStep "[$module] Commit changes for version $VERSION" git commit -m "'Automatically generated changes for version $VERSION'"
-    if tagExists $VERSION
-    then 
-        doCommandAsStep "[$module] Removing previous version tag $VERSION" git tag -d $VERSION
-        doCommandAsStep "[$module] Removing of previous version tag $VERSION from origin" git push origin :refs/tags/$VERSION
-    fi
-    doCommandAsStep "[$module] Tagging the changes with TAG $VERSION" git tag -a $VERSION -m "'Automatically generated version $VERSION'"
-    doCommandAsStep "[$module] Pushing the changes" git push
-    doCommandAsStep "[$module] Pushing the tags" git push origin --tags
-    cd $THIS_DIR
+    doCommandAsStep "Creating artifacts directory $ARTIFACTS_DIR" mkdir -p "$ARTIFACTS_DIR"
+    cd "$GENERATED_BASE_DIR"
+    doCommandAsStep "[$module] Creating artifact $artifact_name" zip -r "$ARTIFACTS_DIR/$artifact_name" "$directory_name"
+    cd "$THIS_DIR"
 }
 
 #######################################################################################
@@ -113,5 +92,5 @@ source $MODULES_LIST_FILE_PATH
 for module in ${GENERATED_MODULES_NAMES[@]}
 do 
     generate $module
-    publish $module
+    package $module
 done

@@ -13,7 +13,6 @@ pipelines:
                 image: chocotechnologies/swagger-codegen:1.0.46
                 trigger: automatic
                 script:
-                    - git config --global user.email "pipeline@choco-technologies.com"
-                    - git config --global user.name "auth-gen pipelines"
-                    - ./initialize.sh
                     - ./publish.sh -v="${BITBUCKET_TAG/V./}"
+                artifacts:
+                    - artifacts/**
