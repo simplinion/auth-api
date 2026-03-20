@@ -29,10 +29,13 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/V.')
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
-      - name: Initialize and publish
+      - name: Extract version
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#V.}" >> $GITHUB_OUTPUT
+      - name: Generate and package clients
         run: |
           VERSION="${GITHUB_REF_NAME#V.}"
           docker run --rm \
@@ -40,9 +43,9 @@ jobs:
             -w /workspace \
             -e VERSION="$VERSION" \
             chocotechnologies/swagger-codegen:1.0.46 \
-            sh -c '
-              git config --global user.email "pipeline@choco-technologies.com" &&
-              git config --global user.name "auth-gen pipelines" &&
-              ./initialize.sh &&
-              ./publish.sh -v="$VERSION"
-            '
+            sh -c './publish.sh -v="$VERSION"'
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-clients-${{ steps.version.outputs.version }}
+          path: artifacts/

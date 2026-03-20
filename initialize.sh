@@ -57,6 +57,7 @@ function generate()
     local directory_name=${GENERATED_MODULES_DIRECTORIES[$module]}
     local directory_path=$GENERATED_BASE_DIR/$directory_name
         
+    doCommandAsStep "Creating directory for module $module" mkdir -p "$directory_path"
     doCommandAsStep "Removing of all not hidden files from $directory_path" find "$directory_path" -type f -name "'[^.]*'" -delete
     doCommandAsStep "Generation of module $module" $genera_file_path -m=$module -c="'$CONFIG_DIR/${module}.json'" -t="'$directory_path'" --verbose=$VERBOSE
 }
@@ -66,9 +67,6 @@ function generate()
 #   MAIN
 #
 prepareScript "$@"
-
-doCommandAsStep "Repository GIT submodules initialization" git submodule init
-doCommandAsStep "Update of the submodules" git submodule update --recursive
 
 source $MODULES_LIST_FILE_PATH
 
