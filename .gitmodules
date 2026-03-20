@@ -1,9 +1,9 @@
 [submodule "SymfonyBundle-php"]
 	path = SymfonyBundle-php
-	url = git@github.com:JohnAmadis/auth-php-symfony.git
+	url = git@github.com:simplinion/auth-gen-server-php-symfony.git
 [submodule "SwaggerClient-php"]
 	path = SwaggerClient-php
-	url = git@github.com:JohnAmadis/auth-php.git
+	url = git@github.com:simplinion/auth-gen-php.git
 [submodule "qt5cpp"]
 	path = qt5cpp
-	url = git@github.com:JohnAmadis/auth-qt5cpp.git
+	url = git@github.com:simplinion/auth-gen-client-qt5cpp.git
