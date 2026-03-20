@@ -1,0 +1,47 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - '**'
+    tags:
+      - 'V.*'
+
+jobs:
+  initialize:
+    name: Initialization of the repository
+    runs-on: ubuntu-latest
+    if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+    permissions:
+      contents: read
+    container:
+      image: chocotechnologies/swagger-codegen:1.0.46
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Initialize
+        run: ./initialize.sh
+
+  publish:
+    name: Publishing of new version
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/V.')
+    permissions:
+      contents: write
+    container:
+      image: chocotechnologies/swagger-codegen:1.0.46
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Configure git
+        run: |
+          git config --global user.email "pipeline@choco-technologies.com"
+          git config --global user.name "auth-gen pipelines"
+      - name: Initialize
+        run: ./initialize.sh
+      - name: Publish
+        run: |
+          VERSION="${GITHUB_REF_NAME#V.}"
+          ./publish.sh -v="$VERSION"
