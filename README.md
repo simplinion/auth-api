@@ -92,7 +92,7 @@ artifacts/
 
 ## CI/CD (Bitbucket Pipelines)
 
-The pipeline is defined in `bitbucket-pipelines.yml` and runs on the `chocotechnologies/swagger-codegen:1.0.46` Docker image.
+The pipeline is defined in `bitbucket-pipelines.yml` and runs on the `chocotechnologies/swagger-codegen:1.0.48` Docker image.
 
 | Trigger | Step | Script |
 |---|---|---|
