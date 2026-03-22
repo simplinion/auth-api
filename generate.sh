@@ -46,10 +46,10 @@ function prepareScript()
     addCommandLineOptionalArgument TARGET_PATH "-t|--target-path" "directory" "Target directory for the generated code" "$THIS_DIR"
     addCommandLineOptionalArgument GENERATE_FILE_PATH "--generate-file-path" "file" "Path to the generate.sh script from swagger-codegen repository" "/swagger/generate.sh"
     addCommandLineOptionalArgument YAML_FILE_PATH "--yaml" "existing_file" "Path to the existing Yaml file with the REST interface definition" "$THIS_DIR/swagger.yaml"
-    addCommandLineOptionalArgument HOST "-h|--host" "not_empty_string" "URL to use as host for the generated clients" "oauth2.choco-technologies.com"
+    addCommandLineOptionalArgument HOST "-h|--host" "not_empty_string" "URL to use as host for the generated clients" "oauth2.simplinion.com"
     addCommandLineOptionalArgument VERSION "-v|--version" "not_empty_string" "Version to use in the interface definition" "1.0.0"
     addCommandLineOptionalArgument SWAGGER_JAR_FILE "--jar" "file" "Path to the swagger JAR file" "/swagger/swagger-codegen-cli.jar"
-    addCommandLineOptionalArgument DOCKER_IMAGE "--image" "not_empty_string" "Name of the image to use for code generation" "chocotechnologies/swagger-codegen"
+    addCommandLineOptionalArgument DOCKER_IMAGE "--image" "not_empty_string" "Name of the image to use for code generation" "simplinion/swagger-codegen"
     addCommandLineOptionalArgument CONFIG_FILE "-c|--config" "file" "Path to the file with configuration" ""
     
     addRequiredTool java "JAVA is required for the swagger-codegen, to execute the JAR file" "TRUE" "sudo apt-get install default-jdk"

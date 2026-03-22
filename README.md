@@ -1,10 +1,10 @@
 # auth-api
 
-This repository stores and versions the **Choco Authorization API** definition (`swagger.yaml`) and provides tooling to generate server/client code for other applications using [swagger-codegen](https://github.com/swagger-api/swagger-codegen).
+This repository stores and versions the **Simplinion Authorization API** definition (`swagger.yaml`) and provides tooling to generate server/client code for other applications using [swagger-codegen](https://github.com/swagger-api/swagger-codegen).
 
 ## What is this repository for?
 
-The `swagger.yaml` file is the single source of truth for the Choco Authorization API (OAuth2 + Basic auth). From this definition, server and client stubs are automatically generated for the following targets:
+The `swagger.yaml` file is the single source of truth for the Simplinion Authorization API (OAuth2 + Basic auth). From this definition, server and client stubs are automatically generated for the following targets:
 
 | Module | Swagger-codegen generator | Output directory |
 |---|---|---|
@@ -69,10 +69,10 @@ Optional arguments:
 | `-m, --module` | `php-symfony` | Swagger-codegen module name (`php-symfony`, `php`, `qt5cpp`) |
 | `-t, --target-path` | current directory | Output directory for generated code |
 | `--yaml <file>` | `./swagger.yaml` | Path to the Swagger YAML file |
-| `-h, --host <url>` | `oauth2.choco-technologies.com` | Host URL written into the generated code |
+| `-h, --host <url>` | `oauth2.simplinion.com` | Host URL written into the generated code |
 | `-v, --version <ver>` | `1.0.0` | API version written into the generated code |
 | `--jar <file>` | `/swagger/swagger-codegen-cli.jar` | Path to the swagger-codegen JAR |
-| `--image <name>` | `chocotechnologies/swagger-codegen` | Docker image used when the JAR is unavailable |
+| `--image <name>` | `simplinion/swagger-codegen` | Docker image used when the JAR is unavailable |
 | `-c, --config <file>` | *(none)* | Path to a module-specific JSON config file |
 
 ## Publishing artifacts
