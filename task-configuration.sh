@@ -1,2 +1,2 @@
-PROJECT_NAME=chocotechnologies
+PROJECT_NAME=simplinion
 REPOSITORY_NAME=auth-gen

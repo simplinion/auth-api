@@ -1,22 +1,22 @@
 swagger: '2.0'
 info:
   version: 1.0.0
-  title: Choco Authorization API
+  title: Simplinion Authorization API
   description: >
-    This is an interface for authorization by using ChocoAuth service  
+    This is an interface for authorization by using SimplinionAuth service  
 
 securityDefinitions:
   WebAuth:
     type: basic
     description: >
       Basic authorization only for trusted hosts
-  ChocoAuth:
+  SimplinionAuth:
     type: oauth2
-    authorizationUrl: https://choco-technologies.com/login/oauth/authorize
-    tokenUrl: https://choco-technologies.com/login/oauth/access_token
+    authorizationUrl: https://simplinion.com/login/oauth/authorize
+    tokenUrl: https://simplinion.com/login/oauth/access_token
     flow: accessCode
     description: >
-      OAuth2 authorization with ChocoAuth API
+      OAuth2 authorization with SimplinionAuth API
     scopes:
       user: >
         allows only for user identification (without privilege for accessing of user information). The client application will be able to read only `user_id`, but nothing more. 
@@ -25,10 +25,10 @@ securityDefinitions:
       remove: >
         allows to remove of the user
       admin: >
-        Scope for the choco-technologies admin. It allows for managment of the users database
+        Scope for the simplinion admin. It allows for managment of the users database
 
 security:
-  - ChocoAuth:
+  - SimplinionAuth:
     - user
     - edit
     - remove
@@ -66,11 +66,11 @@ definitions:
         pattern: '^[a-zA-Z0-9]+$'
         example: '2a57a5d9e7a5162cfc134893a4850e61'
         description: >
-          Unique ID of the client registered in the choco-technologies systems.
+          Unique ID of the client registered in the simplinion systems.
       redirect_uri:
         type: string
         format: uri
-        example: https://choco-order.com
+        example: https://simplinion.com
         description: >
           URI to use as a callback for the request. 
       scope:
@@ -181,7 +181,7 @@ definitions:
       redirect_uri:
         type: string
         format: uri
-        example: https://choco-order.com
+        example: https://simplinion.com
         description: >
           URI to use as a callback for the request. 
       scope:
@@ -228,7 +228,7 @@ definitions:
       redirect_uri:
         type: string
         format: uri
-        example: https://choco-order.com
+        example: https://simplinion.com
         description: >
           URI to use as a callback for the request. 
       expirationDate:
@@ -290,7 +290,7 @@ paths:
     get:
       summary: Endpoint for authorization
       description: >
-        The endpoint allows for authorization in the ChocoAuth system. It returns an 
+        The endpoint allows for authorization in the SimplinionAuth system. It returns an 
         authorization code, that can be used later in the requests
       security: 
         - WebAuth: []
@@ -465,7 +465,7 @@ paths:
       description: >
         The endpoint should be used to unregister a user
       security:
-        - ChocoAuth: [ remove ]
+        - SimplinionAuth: [ remove ]
       consumes:
         - application/json
       produces:
@@ -505,7 +505,7 @@ paths:
       description: >
         The API is for admin only and allows for reading of list of registered users
       security:
-        - ChocoAuth: [ admin ]
+        - SimplinionAuth: [ admin ]
       produces:
         - application/json
       operationId: getUsers
@@ -557,7 +557,7 @@ paths:
         The endpoint is used for registration of a new users
       security:
         - WebAuth: []
-        - ChocoAuth: [ admin ]
+        - SimplinionAuth: [ admin ]
       produces:
         - application/json
       consumes:
@@ -600,7 +600,7 @@ paths:
       description: >
         The endpoint is designed for reading of information about a user 
       security:
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       produces:
         - application/json
       operationId: getUser
@@ -641,7 +641,7 @@ paths:
         The endpoint is for update of information about the given user. 
       security:
         - WebAuth: []
-        - ChocoAuth: [user]
+        - SimplinionAuth: [user]
       produces:
         - application/json
       consumes:
@@ -689,7 +689,7 @@ paths:
         The API is designed for removal of a user with the given `user_id`
       security:
         - WebAuth: []
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       produces:
         - application/json
       operationId: deleteUser
@@ -727,7 +727,7 @@ paths:
         The endpoint is for creating of a new client that can be used for authorization purpose (in `/login/oauth/authorize` endpoint). The user specified by the `userId` parameter will be set as an owner for the client. 
       security:
         - WebAuth: []
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       produces:
         - application/json
       operationId: createClient
@@ -769,7 +769,7 @@ paths:
         The endpoint is for getting of a list of clients created by the user
       security:
         - WebAuth: []
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       produces:
         - application/json
       operationId: getClients
@@ -802,7 +802,7 @@ paths:
         The endpoint allows for reading of information about the given client
       security:
         - WebAuth: []
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       produces:
         - application/json
       operationId: getClient
@@ -845,7 +845,7 @@ paths:
         Allows for update of the information about the client 
       security:
         - WebAuth: []
-        - ChocoAuth: [ user ]
+        - SimplinionAuth: [ user ]
       consumes:
         - application/json
       produces:
@@ -893,7 +893,7 @@ paths:
         Allows for deletion of the information about the client 
       security:
         - WebAuth: []
-        - ChocoAuth: [user]
+        - SimplinionAuth: [user]
       produces:
         - application/json
       operationId: deleteClient
@@ -938,7 +938,7 @@ paths:
       responses:
         200:
           description: OK
-host: oauth2.choco-technologies.com
+host: oauth2.simplinion.com
 basePath: /1.0.0
 schemes:
  - https

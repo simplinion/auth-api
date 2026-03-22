@@ -2,8 +2,8 @@
     "gitUserId" : "JohnAmadis", 
     "gitRepoId" : "auth-php-symfony",
     "variableNamingConvention" : "camelCase", 
-    "invokerPackage" : "ChocoAuth\\Server",
-    "bundleName" : "ChocoAuth", 
+    "invokerPackage" : "SimplinionAuth\\Server",
+    "bundleName" : "SimplinionAuth", 
     "composerProjectName" : "auth-server", 
-    "composerVendorName" : "chocotechnologies"
+    "composerVendorName" : "simplinion"
 }

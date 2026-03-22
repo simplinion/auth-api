@@ -1,6 +1,6 @@
 {
     "gitUserId" : "JohnAmadis", 
     "gitRepoId" : "auth-qt5cpp",
-    "modelNamePrefix" : "ChocoAuth",
-    "cppNamespace" : "ChocoAuth"
+    "modelNamePrefix" : "SimplinionAuth",
+    "cppNamespace" : "SimplinionAuth"
 }

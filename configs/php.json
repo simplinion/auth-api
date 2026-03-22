@@ -2,7 +2,7 @@
     "gitUserId" : "JohnAmadis", 
     "gitRepoId" : "auth-php",
     "variableNamingConvention" : "camelCase", 
-    "invokerPackage" : "ChocoAuth\\Client",
+    "invokerPackage" : "SimplinionAuth\\Client",
     "composerProjectName" : "auth-client", 
-    "composerVendorName" : "chocotechnologies"
+    "composerVendorName" : "simplinion"
 }
