@@ -78,6 +78,11 @@ function package()
     doCommandAsStep "Creating artifacts directory $ARTIFACTS_DIR" mkdir -p "$ARTIFACTS_DIR"
     cd "$GENERATED_BASE_DIR"
     doCommandAsStep "[$module] Creating artifact $artifact_name" zip -r "$ARTIFACTS_DIR/$artifact_name" "$directory_name"
+
+    if [ -f "$THIS_DIR/RELEASE_NOTES.md" ]; then
+        doCommandAsStep "[$module] Adding release notes to $artifact_name" zip -j "$ARTIFACTS_DIR/$artifact_name" "$THIS_DIR/RELEASE_NOTES.md"
+    fi
+
     cd "$THIS_DIR"
 }
 
