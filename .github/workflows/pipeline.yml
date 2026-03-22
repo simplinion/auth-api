@@ -37,12 +37,34 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
-      contents: read
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Extract version
         id: version
         run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Fetch or generate release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          REPO="${GITHUB_REPOSITORY}"
+
+          # Try to get notes from a pre-existing release (e.g. a draft created before pushing the tag)
+          NOTES=$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.body' 2>/dev/null || true)
+
+          # If the release doesn't exist yet or has an empty body, auto-generate notes from commits
+          if [ -z "$NOTES" ]; then
+            NOTES=$(gh api "repos/${REPO}/releases/generate-notes" \
+              -X POST \
+              -f tag_name="${TAG}" \
+              --jq '.body' 2>/dev/null || echo "No release notes available.")
+          fi
+
+          echo "$NOTES" > RELEASE_NOTES.md
+          echo "Release notes written to RELEASE_NOTES.md"
+
       - name: Generate and package clients
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
@@ -52,8 +74,29 @@ jobs:
             -e VERSION="$VERSION" \
             chocotechnologies/swagger-codegen:1.0.48 \
             sh -c './publish.sh -v="$VERSION"'
-      - name: Upload artifacts
+
+      - name: Upload php-symfony client artifact
         uses: actions/upload-artifact@v4
         with:
-          name: generated-clients-${{ steps.version.outputs.version }}
-          path: artifacts/
+          name: php-symfony-${{ steps.version.outputs.version }}
+          path: artifacts/php-symfony-${{ steps.version.outputs.version }}.zip
+
+      - name: Upload php client artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: php-${{ steps.version.outputs.version }}
+          path: artifacts/php-${{ steps.version.outputs.version }}.zip
+
+      - name: Upload qt5cpp client artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: qt5cpp-${{ steps.version.outputs.version }}
+          path: artifacts/qt5cpp-${{ steps.version.outputs.version }}.zip
+
+      - name: Publish artifacts to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*.zip
+          body_path: RELEASE_NOTES.md
+          draft: false
+          prerelease: false
